@@ -282,11 +282,11 @@ def preProcessImg(img):
     img6 = np.repeat(img5, 3, axis=2)
     return img6
 
-def create_acc_codewords():
-    input_fname = '/reg/d/ana01/temp/davidsch/mlearn/accbeam.h5'
+def create_acc_codewords(input_fname, output_fname):
+#    input_fname = '/reg/d/ana01/temp/davidsch/mlearn/accbeam.h5'
     h5in = h5py.File(input_fname,'r')
     NN = len(h5in['yag'])
-    output_fname = '/reg/d/ana01/temp/davidsch/mlearn/accbeam_codewords.h5'
+    #    output_fname = '/reg/d/ana01/temp/davidsch/mlearn/accbeam_codewords.h5'
     h5out = h5py.File(output_fname,'w')
     h5out['label'] = h5in['label'][:]
     h5out['vccbox'] = h5in['vccbox'][:]
@@ -318,4 +318,6 @@ def create_acc_codewords():
     h5out.close()
 
 if __name__ == '__main__':
-    create_acc_codewords()
+    assert len(sys.argv)==3, "usage: program input.h5 output.h5"
+    inh5, outh5 = sys.argv[1], sys.argv[2]
+    create_acc_codewords(inh5, outh5)
