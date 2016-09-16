@@ -1,0 +1,27 @@
+#!/bin/bash -x
+
+# no variance thresholding
+python pipeline.py --skipcw --skipregress --results  --prefix=eb_alg_none_f1_f2
+python pipeline.py --skipcw --skipregress --results --prefix=eb_alg_denoise-log_f1_f2
+python pipeline.py --skipcw --skipregress --results --prefix=eb_alg_denoise-max-log_f1_f2
+
+python pipeline.py --skipcw --skipregress --results --prefix=eb_alg_none_f1_f2_f4
+python pipeline.py --skipcw --skipregress --results --prefix=eb_alg_denoise-log_f1_f2_f4
+python pipeline.py --skipcw --skipregress --results --prefix=eb_alg_denoise-max-log_f1_f2_f4
+
+python pipeline.py --skipcw --skipregress --results --prefix=eb_subbkg_alg_none_f1_f2_f4
+python pipeline.py --skipcw --skipregress --results --prefix=eb_subbkg_alg_denoise-log_f1_f2_f4
+python pipeline.py --skipcw --skipregress --results --prefix=eb_subbkg_alg_denoise-max-log_f1_f2_f4
+
+# variance thresholding
+python pipeline.py --skipcw --skipregress --results --prefix=eb_varthresh_alg_none_f1_f2
+python pipeline.py --skipcw --skipregress --results --prefix=eb_varthresh_alg_denoise-log_f1_f2
+python pipeline.py --skipcw --skipregress --results --prefix=eb_varthresh_alg_denoise-max-log_f1_f2
+
+python pipeline.py --skipcw --skipregress --results --prefix=eb_varthresh_alg_none_f1_f2_f4
+python pipeline.py --skipcw --skipregress --results --prefix=eb_varthresh_alg_denoise-log_f1_f2_f4
+python pipeline.py --skipcw --skipregress --results --prefix=eb_varthresh_alg_denoise-max-log_f1_f2_f4
+
+python pipeline.py --skipcw --skipregress --results --prefix=eb_varthresh_subbkg_alg_none_f1_f2_f4
+python pipeline.py --skipcw --skipregress --results --prefix=eb_varthresh_subbkg_alg_denoise-log_f1_f2_f4
+python pipeline.py --skipcw --skipregress --results --prefix=eb_varthresh_subbkg_alg_denoise-max-log_f1_f2_f4

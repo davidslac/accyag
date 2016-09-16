@@ -1,0 +1,27 @@
+#!/bin/bash -x
+
+# no variance thresholding
+python pipeline.py --filenums=1,2 --alg=none           --save=20 --force --prefix=eb_alg_none_f1_f2
+python pipeline.py --filenums=1,2 --alg=denoise-log    --save=20 --force --prefix=eb_alg_denoise-log_f1_f2
+python pipeline.py --filenums=1,2 --alg=denoise-max-log --save=20 --force --prefix=eb_alg_denoise-max-log_f1_f2
+
+python pipeline.py --filenums=1,2,4 --alg=none           --save=20 --force --prefix=eb_alg_none_f1_f2_f4
+python pipeline.py --filenums=1,2,4 --alg=denoise-log    --save=20 --force --prefix=eb_alg_denoise-log_f1_f2_f4
+python pipeline.py --filenums=1,2,4 --alg=denoise-max-log --save=20 --force --prefix=eb_alg_denoise-max-log_f1_f2_f4
+
+python pipeline.py --filenums=1,2,4 --alg=none           --subbkg --save=20 --force --prefix=eb_subbkg_alg_none_f1_f2_f4
+python pipeline.py --filenums=1,2,4 --alg=denoise-log    --subbkg --save=20 --force --prefix=eb_subbkg_alg_denoise-log_f1_f2_f4
+python pipeline.py --filenums=1,2,4 --alg=denoise-max-log --subbkg --save=20 --force --prefix=eb_subbkg_alg_denoise-max-log_f1_f2_f4
+
+# variance thresholding
+python pipeline.py --filenums=1,2 --alg=none             --fsvar=0.01 --save=20 --force --prefix=eb_varthresh_alg_none_f1_f2
+python pipeline.py --filenums=1,2 --alg=denoise-log      --fsvar=0.01 --save=20 --force --prefix=eb_varthresh_alg_denoise-log_f1_f2
+python pipeline.py --filenums=1,2 --alg=denoise-max-log   --fsvar=0.01 --save=20 --force --prefix=eb_varthresh_alg_denoise-max-log_f1_f2
+
+python pipeline.py --filenums=1,2,4 --alg=none           --fsvar=0.01 --save=20 --force --prefix=eb_varthresh_alg_none_f1_f2_f4
+python pipeline.py --filenums=1,2,4 --alg=denoise-log    --fsvar=0.01 --save=20 --force --prefix=eb_varthresh_alg_denoise-log_f1_f2_f4
+python pipeline.py --filenums=1,2,4 --alg=denoise-max-log --fsvar=0.01 --save=20 --force --prefix=eb_varthresh_alg_denoise-max-log_f1_f2_f4
+
+python pipeline.py --filenums=1,2,4 --alg=none           --fsvar=0.01 --subbkg --save=20 --force --prefix=eb_varthresh_subbkg_alg_none_f1_f2_f4
+python pipeline.py --filenums=1,2,4 --alg=denoise-log    --fsvar=0.01 --subbkg --save=20 --force --prefix=eb_varthresh_subbkg_alg_denoise-log_f1_f2_f4
+python pipeline.py --filenums=1,2,4 --alg=denoise-max-log --fsvar=0.01 --subbkg --save=20 --force --prefix=eb_varthresh_subbkg_alg_denoise-max-log_f1_f2_f4
