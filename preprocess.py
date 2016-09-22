@@ -2,6 +2,8 @@ import numpy as np
 from scipy.signal import medfilt2d, convolve2d
 from scipy.ndimage.filters import maximum_filter
 from scipy.misc import imresize
+import scipy.stats
+import cv2
 
 _KERN_ONE_3x3 = np.ones((3,3), dtype=np.float32)
 _DEFAULT_FINAL_SHAPE=(224,224)
@@ -59,6 +61,23 @@ def preProcessImgDeNoiseLog(nm, img, final_shape=_DEFAULT_FINAL_SHAPE):
     img *= 255.0/mapTo255
     return img 
 
+def preProcessImgMedGaus(nm, img, final_shape=_DEFAULT_FINAL_SHAPE):
+    '''
+    '''
+    assert nm in ['vcc','yag']
+#    img = img.astype(np.float32)
+    isYag = nm == 'yag'
+    if isYag:
+        img = cv2.medianBlur(img, 5)
+        img = cv2.GaussianBlur(img, (55,55),0)
+        img = scipy.stats.threshold(img, 1.5)
+    else:
+        img = cv2.medianBlur(img, 7)
+        img = cv2.GaussianBlur(img, (15,15),0)
+
+    img = imresize(img, final_shape, interp='lanczos', mode='F')
+    return img 
+
 def preProcessImgDenoiseGainMaxReduceLog(nm, img, final_shape=_DEFAULT_FINAL_SHAPE):
     '''meant for yag's with faint signal, 
     boost up signal of beam by summing box of pixels
@@ -81,6 +100,7 @@ def preProcessImgDenoiseGainMaxReduceLog(nm, img, final_shape=_DEFAULT_FINAL_SHA
     
 ################ Main code #####################
 ALGS = {'none':preProcessImgNone,
+        'med-gaus':preProcessImgMedGaus,
         'denoise-log':preProcessImgDeNoiseLog,
         'denoise-max-log':preProcessImgDenoiseGainMaxReduceLog}
 

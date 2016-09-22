@@ -272,9 +272,9 @@ class BeamData(object):
         fig = plt.figure(figH, figsize=(18, 12))
         plot_order = range(NN)
         random.shuffle(plot_order)
-        sp_hits=0
-        sp_misses=0
         user_quit = False
+        sp_hits={'yag_raw':0, 'yag_processed':0, 'vcc_raw':0, 'vcc_processed':0}
+        sp_misses={'yag_raw':0, 'yag_processed':0, 'vcc_raw':0, 'vcc_processed':0}
         for plotNumber, sampleIdx in enumerate(plot_order):
             if user_quit: break
             plt.clf()
@@ -287,20 +287,29 @@ class BeamData(object):
                     img, box, roi = self.get_img_box_roi(nm, stage, sampleIdx)
                     plt.subplot(2,2,subplt)
                     plt.imshow(img, interpolation='none')
+                    spsol='no bx'
+                    do_pause = False
                     if 1==self.labels[nm][sampleIdx]:
                         if do_sigprocess:
                             sig_row, sig_col = signal_processing.signal_processing_solution(img)
                             plt.plot(sig_col, sig_row, 'w+', mew=4, ms=8)
                             sp_hit = boxutil.in_box(box, y=sig_row, x=sig_col)
                             if sp_hit:
-                                sp_hits += 1
+                                sp_hits['%s_%s' % (nm,stage)] += 1
+                                spsol='sp=hit!'
                             else:
-                                sp_misses += 1
+                                sp_misses['%s_%s' % (nm,stage)] += 1
+                                spsol = 'sp=miss:('
+                                if stage == 'raw':
+                                    do_pause = True
                         boxutil.plot_box(box, plt)
                         plt.xlim([0,img.shape[1]])
                         plt.ylim([0,img.shape[0]])
-                    plt.title('%s %s' % (nm, stage))
+                    plt.title('%s %s %s' % (nm, stage, spsol))
                     plt.colorbar()
+                    if do_pause:
+                        plt.pause(.1)
+                        raw_input("hit enter miss row=%.1f col=%.1f" % (sig_row, sig_col))
             plt.figtext(0.05, 0.95, msg, fontsize='large', fontweight='bold')
             plt.pause(.1)
             if save>0 and plotNumber <=save:
@@ -308,15 +317,17 @@ class BeamData(object):
                 assert (not os.path.exists(fname)) or self.force, "Filename: %s exists, use --force to overwrite" % fname
                 fig.savefig(fname)
             msg += ' hit enter (q if done)'
-            if view:
-                res =raw_input(msg)
-                if res.strip().lower()=='q':
-                    user_quit = True
-                    break
-            else:
-                print(msg)
-        sp_accuracy = sp_hits/float(sp_hits + sp_misses)
-        print("-- signal processing accuracy: %.2f" % sp_accuracy)
+#            if view:
+#                res =raw_input(msg)
+#                if res.strip().lower()=='q':
+#                    user_quit = True
+#                    break
+#            else:
+#                print(msg)
+        for nm in ['yag','vcc']:
+            for stage in ['raw','processed']:
+                sp_accuracy = sp_hits['%s_%s' % (nm,stage)]/float(sp_hits['%s_%s' % (nm,stage)] + sp_misses['%s_%s' % (nm,stage)])
+                print("-- signal processing accuracy name=%s stage=%s: %.2f" % (nm,stage,sp_accuracy))
 
     def max_stats(self):
         '''what is max value in yag/vcc inside the boxes? vs outside?

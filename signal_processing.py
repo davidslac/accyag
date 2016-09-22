@@ -7,6 +7,7 @@ import numpy as np
 import scipy
 import scipy.signal
 from scipy.misc import imresize
+from scipy.stats import threshold
 
 import matplotlib.pyplot as plt
 plt.ion()
@@ -17,6 +18,8 @@ import psmlearn
 
 ### local imports
 import preprocess
+
+import cv2
 
 ## to slow
 '''
@@ -36,8 +39,25 @@ def signal_processing_solution(img, kernel=.05):
     return metric_max
 '''
 
+'''
 def signal_processing_solution(img, kernel=11):
     reduced = imresize(img,(250,250))
     filtered = scipy.signal.medfilt2d(reduced,kernel)
     filtered_max = np.unravel_index(np.argmax(filtered), filtered.shape)
     return filtered_max[0]*img.shape[0]/250.0, filtered_max[1]*img.shape[1]/250.0
+'''
+
+def signal_processing_solution(img, kernel=11):
+    isYag = img.shape[0]>1000
+    if isYag:
+        img = cv2.medianBlur(img, 5)
+        img = cv2.GaussianBlur(img, (55,55),0)
+        img = threshold(img, 1.5)
+    else:
+        if img.dtype == np.float32:
+            img = (np.minimum(np.maximum(0,img),255.0)).astype(np.uint8)
+        img = cv2.medianBlur(img, 7)
+        img = cv2.GaussianBlur(img, (15,15),0)
+    filtered_max = np.unravel_index(np.argmax(img), img.shape)
+
+    return filtered_max[0], filtered_max[1]
