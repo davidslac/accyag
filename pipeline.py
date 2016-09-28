@@ -3,7 +3,7 @@ import sys
 import h5py
 import argparse
 
-sys.path.append('/reg/neh/home/davidsch/github/davidslac/psana-mlearn')
+import adjustenv
 import psmlearn
 
 import preprocess
@@ -53,6 +53,7 @@ parser.add_argument('--fsvar', type=float, help='minimum variance for feature se
 parser.add_argument('--skipcw', action='store_true', help='skip generation of codewords, use existing codewords file')
 parser.add_argument('--skipregress', action='store_true', help='skip regression, use existing regress file')
 parser.add_argument('--results', action='store_true', help='view regression results, use existing regress file')
+parser.add_argument('--viewbkg', action='store_true', help='see the background screens')
 
 args = parser.parse_args()
 assert args.prefix, "provide prefix"
@@ -76,6 +77,9 @@ else:
                                 nn=args.nn)
 
     accdata.loadall(reload=False)
+
+    if args.viewbkg:
+        accdata.viewbkg()
 
     if args.view or args.save>0:
         accdata.plotROIs(save=args.save, view=args.view)

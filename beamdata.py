@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 plt.ion()
 plt.show()
 
-sys.path.append('/reg/neh/home/davidsch/github/davidslac/psana-mlearn')
+import adjustenv
 import psmlearn
 import psmlearn.boxutil as boxutil
 
@@ -176,6 +176,32 @@ class BeamData(object):
                                                               imgs=self.rawdata['vcc']['img'])
         self.calcProcessedBoxes()
         self.extractProcessesROIs()
+
+    def viewbkg(self):
+        plt.figure(30, figsize=(12,12))
+        plt.clf()
+        assert self.rawdata is not None, "data not loaded"
+        fnum = 4
+        for ky,log,subplt in zip(['yagbkg', 'vccbkg', 'yagbeam', 'vccbeam'],
+                                 [True, False, True, True],
+                                 [1,2,3,4]):
+            kyData = self.rawdata.get(ky,None)
+            if kyData is None:
+                print("beamdata: viewbkg - no %s in data"  % ky)
+                continue
+            if kyData.keys() != [fnum]:
+                print("Warning: code is hard coded for file %d, but data has %s for files %s" % 
+                      (fnum, ky, kyData.keys()))
+            plt.subplot(2,2,subplt)
+            if log:
+                plt.imshow(np.log(1.0+np.maximum(0.0,kyData[fnum])), interpolation='none')
+                plt.title("%s (log scale) file %d" % (ky, fnum))
+            else:
+                plt.imshow(kyData[fnum], interpolation='none')
+                plt.title("%s file %d" % (ky, fnum))
+            plt.colorbar()
+        plt.pause(.1)
+        raw_input("all done with viewbkg")
 
     def calcProcessedBoxes(self):
         raw_shape = {'yag':self.rawdata['yag']['img'][0].shape,

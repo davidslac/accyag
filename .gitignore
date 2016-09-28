@@ -2,6 +2,11 @@
 eb_*.png
 eb_*.h5
 
+# some files not to checked in
+vgg16_weights.npz
+data/
+h5/
+ 
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

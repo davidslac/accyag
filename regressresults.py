@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 plt.ion()
 plt.show()
 
-sys.path.append('/reg/neh/home/davidsch/github/davidslac/psana-mlearn')
+import adjustenv
 import  psmlearn
 import psmlearn.boxutil as boxutil
 
